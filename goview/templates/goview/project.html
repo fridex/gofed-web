@@ -1,0 +1,133 @@
+{% extends "goview/base.html" %}
+{% load staticfiles %}
+
+{% block html_title %}GoWeb: stats for {{ project.name }}{% endblock html_title %}
+
+{% block content %}
+      <div class="row vertical-align goweb-desc">
+        <div class="col-md-6 hidden-md hidden-xs">
+           <img src="{% static "goview/img/goweb-logo.jpg" %}"/>
+        </div>
+        <div class="col-md-6">
+          <h1 class="text-right">{{ project.name }}</h1>
+          <dl class="dl-horizontal">
+            <dt class="hidden">Project ID</dt>
+            <dd id="project_id" class="hidden">{{ project.id }}</dd>
+            <dt>Project Name</dt>
+            <dd id="project_name">{{ project.name }}</dd>
+            <dt>Project Full Name</dt>
+            <dd id="project_fullname">{{ project.full_name }}</dd>
+            <dt>SCM upstream</dt>
+            <dd id="project_scm_url"><a href="{{ project.scm_url }}">{{ project.scm_url }}</a></dd>
+            <dt>Apidiff Trend</dt>
+            <dd id="project_trend">{{ project.trend }}</dd>
+            <dt>Last Update</dt>
+            <dd id="project_update_date">
+            {% if project.update_date %}
+            {{ project.update_date }}
+            {% else %}
+            -
+            {% endif %}
+            </dd>
+          </dl>
+        </div>
+      </div>
+      {% if error %}
+      <div class="alert alert-danger fade in">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        <strong>Error: </strong> {{ error }}
+      </div>
+      {% endif %}
+      <div>
+        <div class="form-group">
+          <select class="form-control" id="filter_type" autofocus="autofocus">
+            <option selected value="depth">Depth based filtering</option>
+            <option value="commit">Commit based filtering</option>
+            <option value="date">Date based filtering</option>
+          </select>
+        </div>
+        <div class="form-group has-feedback input-group">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-collapse-down"></i>
+          </span>
+          <input type="text" class="form-control" id="filter_from_commit" placeholder="From commit" />
+        </div>
+        <div class="form-group has-feedback input-group hidden">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-collapse-up"></i>
+          </span>
+          <input type="text" class="form-control" id="filter_to_commit" placeholder="To commit" />
+        </div>
+        <div class="form-group has-feedback input-group">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-log-in"></i>
+          </span>
+          <input type="text" class="form-control" id="filter_depth" placeholder="Depth" value="20" />
+        </div>
+        <div class="form-group has-feedback input-group hidden">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-calendar"></i>
+          </span>
+          <input type="text" class="form-control" id="filter_from_date" placeholder="From date" />
+        </div>
+        <div class="form-group has-feedback input-group hidden">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-calendar"></i>
+          </span>
+          <input type="text" class="form-control" id="filter_to_date" placeholder="To date" />
+        </div>
+        <div class="text-right">
+          <button type="button" class="btn btn-default btn-md" id="swap_fields">
+            <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+            Swap Fields
+          </button>
+          <button type="button" class="btn btn-default btn-md" id="dependency_graph">
+            <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+            Dependency Graph
+          </button>
+          <button type="button" class="btn btn-default btn-md" id="query_url">
+            <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+            Get Query URL
+          </button>
+          {% if user.is_authenticated %}
+          <button type="button" class="btn btn-default btn-md" id="update">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            Update
+          </button>
+          {% endif %}
+          <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-target="#scm_log" id="show_log">
+            <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+            SCM Log
+          </button>
+          <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-target="#scm_commit" id="show_commit">
+            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+            SCM Commits diffs
+          </button>
+          {% comment %}wrapper for tooltip when disabled #show_stats button{% endcomment %}
+          <div data-toggle="tooltip" title="" style="display: inline-block">
+            <button type="button" class="btn btn-primary btn-md" id="show_stats">
+              <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+              Show
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+      <h2 id="stats">Statistics</h2>
+
+      <figure class="goweb-graph" id='graph_total'>
+      </figure>
+      <figure class="goweb-graph" id='graph_added'>
+      </figure>
+      <figure class="goweb-graph" id='graph_modified'>
+      </figure>
+      <figure class="goweb-graph" id='graph_cpc'>
+      </figure>
+
+      <link rel="stylesheet" type="text/css" href="{% static "goview/css/bootstrap-datepicker.css"%}" />
+      <script src="{% static "goview/js/bootstrap-datepicker.js" %}"></script>
+      <script src="{% static "goview/js/goview-project.js" %}"></script>
+      <script type="text/javascript" src="{% static "goview/js/svg.jquery.js" %}"></script>
+      <script type="text/javascript" src="{% static "goview/js/pygal-tooltips.js" %}"></script>
+{% endblock content %}

@@ -1,0 +1,162 @@
+<link href="goview/static/goview/css/bootstrap.min.css" rel="stylesheet">
+
+<h2>How to use this service</h2>
+
+<h2>REST Service</h2>
+
+<p>
+It is possible to use simple REST service in order to retrieve data from the
+server. REST service is available under the <mark>/rest/</mark> adress. There
+are implemented three basic filtering options:
+
+<ul>
+	<li>Date-based filtering</li>
+	<li>Depth-based filtering</li>
+	<li>Commit-based filtering</li>
+</ul>
+
+<p>
+Each filter is documented in one of the following sections.
+
+
+<h3>Date based filtering</h3>
+
+<pre>/rest/date/&lt;project_id&gt;/&lt;from_date&gt;/&lt;to_date&gt;/</pre>
+
+<ul>
+	<li><strong>&lt;project_id&gt;</strong></li>
+	<li><strong>&lt;from_date&gt;</strong></li>
+	<li><strong>&lt;to_date&gt;</strong></li>
+</ul>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Example</div>
+  <div class="panel-body">
+    <pre>/rest/date/&lt;project_id&lt;/&lt;from_date&gt;/&lt;to_date&gt;/</pre>
+  </div>
+</div>
+
+<h3>Depth based filtering</h3>
+
+<pre>/rest/depth/&lt;project_id&gt;/&lt;depth&gt;/&lt;from_commit&gt;/</pre>
+
+<ul>
+	<li><strong>&lt;project_id&gt;</strong></li>
+	<li><strong>&lt;depth&gt;</strong></li>
+	<li><strong>&lt;from_commit&gt;</strong></li>
+</ul>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Example</div>
+  <div class="panel-body">
+    <pre>/rest/depth/&lt;project_id&gt;/&lt;depth&gt;/&lt;from_commit&gt;/</pre>
+  </div>
+</div>
+
+
+<h3>Commit based filtering</h3>
+
+<pre>/rest/commit/&lt;project_id&gt;/&lt;from_commit&gt;/&lt;to_commit&gt;/</pre>
+
+<ul>
+	<li><strong>&lt;project_id&gt;</strong></li>
+	<li><strong>&lt;from_commit&gt;</strong></li>
+	<li><strong>&lt;to_commit&gt;</strong></li>
+</ul>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Example</div>
+  <div class="panel-body">
+    <pre>/rest/depth/&lt;project_id&gt;/&lt;depth&gt;/&lt;from_commit&gt;/</pre>
+  </div>
+</div>
+
+
+
+<h2>Graph Plotting Service</h2>
+
+
+<h3>Date based filtering</h3>
+
+<pre>/graph/date/&lt;project_id&gt;/&lt;from_date&gt;/&lt;to_date&gt;/</pre>
+
+<ul>
+	<li><strong>&lt;project_id&gt;</strong></li>
+	<li><strong>&lt;from_date&gt;</strong></li>
+	<li><strong>&lt;to_date&gt;</strong></li>
+</ul>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Example</div>
+  <div class="panel-body">
+    <pre>/graph/date/&lt;project_id&lt;/&lt;from_date&gt;/&lt;to_date&gt;/</pre>
+  </div>
+</div>
+
+<h3>Depth based filtering</h3>
+
+<pre>/graph/depth/&lt;project_id&gt;/&lt;depth&gt;/&lt;from_commit&gt;/</pre>
+
+<ul>
+	<li><strong>&lt;project_id&gt;</strong></li>
+	<li><strong>&lt;depth&gt;</strong></li>
+	<li><strong>&lt;from_commit&gt;</strong></li>
+</ul>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Example</div>
+  <div class="panel-body">
+    <pre>/graph/depth/&lt;project_id&gt;/&lt;depth&gt;/&lt;from_commit&gt;/</pre>
+  </div>
+</div>
+
+
+<h3>Commit based filtering</h3>
+
+<pre>/graph/commit/&lt;project_id&gt;/&lt;from_commit&gt;/&lt;to_commit&gt;/</pre>
+
+<ul>
+	<li><strong>&lt;project_id&gt;</strong></li>
+	<li><strong>&lt;from_commit&gt;</strong></li>
+	<li><strong>&lt;to_commit&gt;</strong></li>
+</ul>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Example</div>
+  <div class="panel-body">
+    <pre>/graph/depth/&lt;project_id&gt;/&lt;depth&gt;/&lt;from_commit&gt;/</pre>
+  </div>
+</div>
+
+<h2>Updates</h2>
+
+All data are periodically updated. If you have an account, you can force update
+on your demand.
+
+<h2>Add a Package</h2>
+
+Is there missing a package? Feel free to contact us. More information can be
+found in <a href="/request/">request</a> section.
+
+<h2>Add a Review</h2>
+
+Do you want to notify us about a review? More information can be found in <a
+href="/review/">request</a> section.
+
+<hr />
+
+<h2>About</h2>
+
+Welcome to Goweb!
+
+<h2>Contact</h2>
+
+If you have found a bug or if you have any suggestion, feel free to contact us:
+
+<address>
+	<strong>Fridolin Pokorny</strong><br />
+	<a href="mailto:fpokorny@redhat.com">fpokorny@redhat.com</a><br />
+	<strong>Jan Chalopka</strong><br />
+	<a href="mailto:jchaloup@redhat.com">jchaloup@redhat.com</a><br />
+</address>
+
