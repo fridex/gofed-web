@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static "goview/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "goview/css/goweb.css" %}" rel="stylesheet">
+    <link href="{% static "goview/css/bootstrap-dialog.css" %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static "goview/img/favicon.png" %}" type="image/x-icon">
+    <link rel="icon" href="{% static "goview/img/favicon.png" %}" type="image/x-icon">
+    <script src="{% static "goview/js/jquery.min.js" %}"></script>
+    <title>{% block html_title %}GoWeb{% endblock html_title %}</title>
+  </head>
+  <body>
+    {% include "goview/menu.html" %}
+    <div class="container">
+      {% block content %}{% endblock content %}
+    </div>
+    {% include "goview/footer.html" %}
+  </body>
+</html>

@@ -1,0 +1,49 @@
+{% load admin_static %}{% load firstof from future %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+<title>{% block title %}{% endblock %}</title>
+<link rel="stylesheet" type="text/css" href="{% static "goview/css/bootstrap.min.css" %}" />
+{% block extrastyle %}{% endblock %}
+<link rel="stylesheet" type="text/css" href="{% static "goview/css/admin.css" %}" />
+<link rel="shortcut icon" href="{% static "goview/img/favicon.png" %}" type="image/x-icon">
+<link rel="icon" href="{% static "goview/img/favicon.png" %}" type="image/x-icon">
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+{% block extrahead %}{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+</head>
+{% load i18n %}
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
+
+{% include "admin/menu.html" %}
+
+<div class="container">
+    {% block messages %}
+        {% if messages %}
+        <div class="alert alert-danger">{% for message in messages %}
+          {{ message|capfirst }}
+        {% endfor %}
+        </div>
+        {% endif %}
+    {% endblock messages %}
+
+    <div id="content" class="row">
+      {% block pretitle %}{% endblock %}
+      {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+      {% block content_nosidebar %}
+      <div class="col-md-9">
+        {% block content %}
+        {{ content }}
+        {% endblock %}
+      </div>
+      <div class="col-md-3">
+        {% block sidebar %}{% endblock %}
+      </div>
+      {% block object-tools %}{% endblock %}
+      {% endblock content_nosidebar %}
+    </div>
+</div>
+
+</body>
+</html>

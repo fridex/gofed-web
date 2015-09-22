@@ -1,0 +1,38 @@
+[
+  {
+    "model": "goview.GoPage",
+    "pk": 1,
+    "fields": {
+      "url_name": "request",
+      "name": "Request package inclusion",
+      "content": "TODO: Adjust this"
+    }
+  },
+  {
+    "model": "goview.GoPage",
+    "pk": 2,
+    "fields": {
+      "url_name": "review",
+      "name": "Review spec file",
+      "content": "TODO: Adjust this"
+    }
+  },
+  {
+    "model": "goview.GoPage",
+    "pk": 3,
+    "fields": {
+      "url_name": "documentation",
+      "name": "Gofed-web: Documentation",
+      "content": "TODO: Adjust this"
+    }
+  },
+  {
+    "model": "goview.GoPage",
+    "pk": 4,
+    "fields": {
+      "url_name": "about",
+      "name": "About",
+      "content": "TODO: Adjust this"
+    }
+  }
+]

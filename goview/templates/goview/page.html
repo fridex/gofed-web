@@ -1,0 +1,12 @@
+{% extends "goview/base.html" %}
+{% load staticfiles %}
+
+{% block html_title %}GoWeb: {{ page.name }}{% endblock html_title %}
+
+{% block content %}
+<h2>{{ page.name }}</h2>
+{% autoescape off %}
+{{ page.content }}
+{% endautoescape %}
+{% endblock content %}
+

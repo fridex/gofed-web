@@ -1,0 +1,15 @@
+{% load staticfiles %}
+    <div class="text-center footer">
+      <p class="text-muted">
+        &copy; 2015
+        <a href="http://github.com/fridex/gofed-web">Source code</a>
+      </p>
+    </div>
+    <script src="{% static "goview/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "goview/js/goweb.js" %}"></script>
+    <script src="{% static "goview/js/bootstrap-dialog.js" %}"></script>
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    </script>

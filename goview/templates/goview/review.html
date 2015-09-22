@@ -1,0 +1,44 @@
+{% extends "goview/base.html" %}
+
+{% block html_title %}GoWeb: {{ page.name }}{% endblock html_title %}
+
+{% block content %}
+      <h2>{{ page.name }}</h2>
+      <div>
+         {% autoescape off %}
+         {{ page.content }}
+         {% endautoescape %}
+      </div>
+      <hr>
+      <form action="/review/" method="POST">
+        {% csrf_token %}
+        {% if error %}
+        <div class="alert alert-danger fade in">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Error: </strong> {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+        {% if form.email.errors %}
+        <div class="form-group has-error">
+        {% else %}
+        <div class="form-group">
+        {% endif %}
+          <label for="id_email">e-mail</label>
+          {{ form.email }}
+          <span class="help-block">{{ form.email.errors }}</span>
+        </div>
+        {% if form.text.errors %}
+        <div class="form-group has-error">
+        {% else %}
+        <div class="form-group">
+        {% endif %}
+          <label for="id_text">Review request text</label>
+          {{ form.text }}
+          <span class="help-block">{{ form.text.errors }}</span>
+        </div>
+        <button type="submit" class="btn btn-primary pull-right">
+          <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+          Submit
+        </button>
+      </form>
+{% endblock content %}

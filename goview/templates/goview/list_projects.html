@@ -1,0 +1,60 @@
+{% extends "goview/base.html" %}
+{% load staticfiles %}
+
+{% block html_title %}GoWeb: List of Golang repos{% endblock html_title %}
+
+{% block content %}
+    <div class="container">
+      <div class="row vertical-align">
+        <div class="col-md-6">
+          <img src="{% static "goview/img/goweb-logo.jpg" %}"/>
+        </div>
+        <div class="col-md-6 form-group has-feedback input-group">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-search "></i>
+          </span>
+          <input type="text" class="form-control" id="search_projects" placeholder="Search projects" autofocus="autofocus" />
+        </div>
+      </div>
+      <table class="table table-striped table-hover" id="project_list" class="">
+        <thead>
+          <tr>
+            <th class="text-center"><a href="#" id="sort_repo">
+              <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
+            </a></th>
+            <th class=""><a href="#" id="sort_project">
+              <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
+              Project
+            </a></th>
+            <th class="text-center"><a href="#" id="sort_trend">
+              <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+              APIdiff trend
+            </a></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project in projects %}
+            <tr>
+              {% if 'bitbucket.org' in project.scm_url %}
+              <td class="col-md-2 text-center"><a href="{{ project.scm_url }}"><img src="{% static "goview/img/bitbucket-logo.png" %}" width="15px"/></a></td>
+              {% else %}
+              <td class="col-md-2 text-center"><a href="{{ project.scm_url }}"><img src="{% static "goview/img/github-logo.png" %}" width="15px"/></a></td>
+              <!-- TODO: not bitbucket nor github logo -->
+              {% endif %}
+              <td class="col-md-8"><a href="{% url 'goview:project' project.full_name %}" class="goview-project">{{ project.full_name }}</a></td>
+              <td class="col-md-2 text-center">{{ project.trend }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="text-right">
+        {% if user.is_authenticated %}
+        <button type="button" class="btn btn-default btn-md" id="update_all">
+          <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+          Force update all
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    <script src="{% static "goview/js/goview-list.js" %}"></script>
+{% endblock content %}
