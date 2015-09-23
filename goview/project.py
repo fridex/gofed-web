@@ -161,6 +161,16 @@ class GoProjectSCM():
 			msg = msg[0].split('\n')
 			return msg[2][len("user:        "):-1]
 
+		def get_commit_tag_git(tree):
+			msg = runCommand("git tag --points-at HEAD", tree)
+			msg = msg[0]
+			return msg
+
+		def get_commit_tag_hg(tree):
+			msg = runCommand('hg log -r "." --template "{latesttag}\n"', tree)
+			msg = msg[0]
+			return msg
+
 		def get_commit_date_git(tree):
 			msg = runCommand("git log --format=%ad -n 1", tree)
 			return parse_date(msg[0][:-1])
@@ -189,6 +199,7 @@ class GoProjectSCM():
 			self.__to_prev_commit     = to_prev_commit_git
 			self.__get_commit_msg     = get_commit_msg_git
 			self.__get_commit_author  = get_commit_author_git
+			self.__get_commit_tag     = get_commit_tag_git
 			self.__get_commit_date    = get_commit_date_git
 		elif self.scm_type == SCMType.mercurial:
 			self.__update_repo        = update_repo_hg
@@ -196,6 +207,7 @@ class GoProjectSCM():
 			self.__to_prev_commit     = to_prev_commit_hg
 			self.__get_commit_msg     = get_commit_msg_hg
 			self.__get_commit_author  = get_commit_author_hg
+			self.__get_commit_tag     = get_commit_tag_hg
 			self.__get_commit_date    = get_commit_date_hg
 		else:
 			raise Exception('Unknown scm type')
@@ -214,6 +226,7 @@ class GoProjectSCM():
 			ret['commit_msg']  = self.__get_commit_msg(tmp_tree2)
 			ret['date']        = self.__get_commit_date(tmp_tree2)
 			ret['author']      = self.__get_commit_author(tmp_tree2)
+			ret['tag']         = self.__get_commit_tag(tmp_tree2)
 			ret['added']       = []
 			ret['modified']    = []
 
@@ -326,6 +339,7 @@ class GoProjectSCM():
 				project_commit.commit_msg = rec['commit_msg']
 				project_commit.author = rec['author']
 				project_commit.date = rec['date']
+				project_commit.tag = rec['tag']
 				project_commit.changes_count = len(rec['added']) + len(rec['modified'])
 				project_commit.save()
 
@@ -360,6 +374,7 @@ class GoProjectSCM():
 		ret['commit']      = obj.commit
 		ret['commit_msg']  = obj.commit_msg
 		ret['author']      = obj.author
+		ret['tag']         = obj.tag
 		ret['date']        = str(obj.date)
 		ret['added']       = []
 		ret['modified']    = []

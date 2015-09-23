@@ -69,6 +69,7 @@ class GoProjectCommit(models.Model):
 	project_desc   = models.ForeignKey(GoProjectDesc)
 	#
 	commit         = models.CharField(max_length = 250)
+	tag            = models.CharField(max_length = 250)
 	commit_msg     = models.TextField()
 	author         = models.CharField(max_length = 250)
 	date           = models.DateTimeField()

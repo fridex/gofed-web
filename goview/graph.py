@@ -69,7 +69,10 @@ class GoGraph():
 		''' Generate SVG stats based on changes in API '''
 		line_chart = pygal.Bar(GoGraph.__prepareSVGConfigTotal())
 		line_chart.title = 'API changes for ' + project_name
-		line_chart.x_labels = [x['commit'][:7] for x in project_stats]
+		line_chart.x_labels = [x['commit'][:7] \
+				if len(x['tag']) == 0
+				else (x['commit'][:7] + ' - ' + x['tag'])
+					for x in project_stats]
 		line_chart.add('+ added', [len(x['added']) for x in project_stats])
 		line_chart.add('- modified', [len(x['modified']) for x in project_stats])
 		return line_chart.render()
@@ -79,7 +82,10 @@ class GoGraph():
 		''' Generate SVG stats based on additions from API '''
 		line_chart = pygal.Line(GoGraph.__prepareSVGConfigAdded())
 		line_chart.title = 'API additions for ' + project_name
-		line_chart.x_labels = [x['commit'][:7] for x in project_stats]
+		line_chart.x_labels = [x['commit'][:7] \
+				if len(x['tag']) == 0
+				else (x['commit'][:7] + ' - ' + x['tag'])
+					for x in project_stats]
 		line_chart.add('+ added', [len(x['added']) for x in project_stats])
 		return line_chart.render()
 
@@ -88,7 +94,10 @@ class GoGraph():
 		''' Generate SVG stats based on modifications from API '''
 		line_chart = pygal.Line(GoGraph.__prepareSVGConfigRemoved())
 		line_chart.title = 'API modifications for ' + project_name
-		line_chart.x_labels = [x['commit'][:7] for x in project_stats]
+		line_chart.x_labels = [x['commit'][:7] \
+				if len(x['tag']) == 0
+				else (x['commit'][:7] + ' - ' + x['tag'])
+					for x in project_stats]
 		line_chart.add('- modified', [len(x['modified']) for x in project_stats])
 		return line_chart.render()
 
