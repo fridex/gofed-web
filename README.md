@@ -144,14 +144,16 @@ The server provides a simple REST service for quering. It can be accessed via
 * `commit` - list of changes for a project between provided commits
 * `depth` - list of changes for a project depending on provided depth
 * `date` - list of changes for a project between dates
+* `check-deps` - check whether commit ARG2 is newer then in the one in Fedora
 
-| Command   | ARG1          | ARG2          | ARG3          |
-|-----------|---------------|---------------|---------------|
-| `list`    |     -         |     -         |     -         |
-| `info`    | project id    |     -         |     -         |
-| `commit`  | project id    | from commit   | to commit     |
-| `depth`   | project id    | depth         | from commit   |
-| `date`    | project id    | from date     | to date       |
+| Command       | ARG1          | ARG2          | ARG3          |
+|---------------|---------------|---------------|---------------|
+| `list`        |     -         |     -         |     -         |
+| `info`        | project id    |     -         |     -         |
+| `commit`      | project id    | from commit   | to commit     |
+| `depth`       | project id    | depth         | from commit   |
+| `date`        | project id    | from date     | to date       |
+| `check-deps`  | project id    | commit        |     -         |
 
 <a name="command_notes"></a>
 * `project id` can be full name of a project or numerical id listed in `list` or

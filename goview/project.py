@@ -11,6 +11,8 @@ from django.utils import timezone
 from django.conf import settings
 from django_cron import logger as cron_logger
 import datetime
+import urllib2
+from django.core.exceptions import ObjectDoesNotExist
 
 class SCMType(Enum):
 	git       = 1
@@ -483,4 +485,40 @@ class GoProjectSCM():
 				ret.append(self.__obj2dict(c))
 
 		return ret
+
+	def check_deps(self, commit):
+		try:
+			response = urllib2.urlopen("http://pkgs.fedoraproject.org/cgit/%s.git/plain/%s.spec" %
+													(self.full_name, self.full_name))
+			ret = response.read()
+		except urllib2.HTTPError as e:
+			return {"error": "Fedora DB: " + str(e)}
+		ret = ret.split('\n')
+
+		commit_fedora = None
+		for line in ret:
+			if line.startswith("%global commit"):
+				commit_fedora = line.split()[-1]
+
+		if not commit_fedora:
+			return {"error": "Fedora commit not found in spec"}
+
+		try:
+			commit_fedora = GoProjectCommit.objects.filter(project_desc__full_name = self.full_name,
+																			commit__startswith = commit_fedora).get()
+		except ObjectDoesNotExist:
+			return {"error": "Fedora commit not found in DB"}
+
+		try:
+			commit_db = GoProjectCommit.objects.filter(project_desc__full_name = self.full_name,
+																		commit__startswith = commit).get()
+		except ObjectDoesNotExist:
+			return {"error": "Requested commit not found in DB"}
+
+		if commit_fedora.id > commit_db.id:
+			return {"status": "newer"}
+		elif commit_fedora.id < commit_db.id:
+			return {"status": "older"}
+		else:
+			return {"status": "up2date"}
 

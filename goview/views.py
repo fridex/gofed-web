@@ -71,7 +71,11 @@ def rest_depth(request, project_id, depth, from_commit = None):
 def rest_date(request, project_id, date1, date2 = None):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
 	res = pool.get_project(project_id).fetch_date(date1, date2)
-	print >> sys.stderr, res
+	return HttpResponse(json.dumps(res), content_type='application/json')
+
+def rest_check_deps(request, project_id, commit):
+	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
+	res = pool.get_project(project_id).check_deps(commit)
 	return HttpResponse(json.dumps(res), content_type='application/json')
 
 # Graph service

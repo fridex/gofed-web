@@ -25,6 +25,7 @@ urlpatterns = patterns('',
 	url(r'^rest/commit/(?P<project_id>[a-zA-Z_\-0-9]+)/(?P<commit1>[0-9a-z]{4,40})(?:/(?P<commit2>[0-9a-z]{4,40}))?/?$', views.rest_commit, name='rest_commit'),
 	url(r'^rest/depth/(?P<project_id>[a-zA-Z_\-0-9]+)/(?P<depth>[0-9]+)(?:/(?P<from_commit>[0-9a-z]{4,40}))?/?$', views.rest_depth, name='rest_depth'),
 	url(r'^rest/date/(?P<project_id>[a-zA-Z_\-0-9]+)/(?P<date1>[0-9\-]+)(?:/?P<date2>[0-9\-]*)?/?$', views.rest_date, name='rest_date'),
+	url(r'^rest/check-deps/(?P<project_id>[a-zA-Z_\-0-9]+)/(?P<commit>[0-9a-z]{4,40})/?$', views.rest_check_deps, name='rest_check_deps'),
 	# Review & Request
 	url(r'^review/?$', views.review, name='review'),
 	url(r'^request/?$', views.request, name='request'),
