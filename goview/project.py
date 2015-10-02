@@ -156,6 +156,9 @@ class GoProjectSCMPool():
 			image = f.read()
 		return image
 
+	def update(self, project_id):
+		self.prefetch_obj(project_id).update()
+
 class GoProjectSCM():
 	def __init__(self, obj = None, name = None, full_name = None, scm_url = None):
 		def update_repo_git():

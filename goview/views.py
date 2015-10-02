@@ -31,7 +31,7 @@ def project(request, project_id):
 def update(request, project_id):
 	if request.user.is_authenticated():
 		pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-		pool.get_project(project_id).update()
+		pool.update(project_id)
 		return HttpResponse("OK", content_type="text/plain")
 	else:
 		return HttpResponseForbidden()
