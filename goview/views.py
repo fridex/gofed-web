@@ -17,7 +17,7 @@ from django.conf import settings
 
 def index(request):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	return render(request, 'goview/list_projects.html', {'projects': pool.get_all()})
+	return render(request, 'goview/list_projects.html', {'projects': pool.get_all_once()})
 
 def project(request, project_id):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)

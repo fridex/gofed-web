@@ -52,11 +52,11 @@ class GoProjectSCMPool():
 	def __init__(self, repo_file = None):
 		self.projects = []
 
-		if repo_file is not None:
-			self.parse_repo_file(repo_file)
-
 	def update_all(self, local = False):
 		ret = 0
+
+		self.parse_repo_file(repo_file)
+
 		for project in self.projects:
 			try:
 				project.update()
@@ -66,8 +66,8 @@ class GoProjectSCMPool():
 				ret = 1
 		return ret
 
-	def get_all(self):
-		return self.projects
+	def get_all_once(self):
+		return GoProjectDesc.objects.all()
 
 	def get_project(self, project_id):
 		try:
@@ -190,7 +190,6 @@ class GoProjectSCM():
 		if not self.full_name:
 			raise SCMException("No name nor full name specified!")
 
-		self.__sync_db_desc()
 		self.scm_type  = SCMType.git if self.scm_url.endswith(".git") else SCMType.mercurial
 		self.data      = []
 		self.repo_path = settings.REPO_PATH + self.full_name
