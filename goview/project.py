@@ -52,11 +52,12 @@ def copytree(src, dst):
 class GoProjectSCMPool():
 	def __init__(self, repo_file = None):
 		self.projects = []
+		self.repo_file = repo_file
 
 	def update_all(self, local = False):
 		ret = 0
 
-		self.parse_repo_file(repo_file)
+		self.parse_repo_file(self.repo_file)
 
 		for project in self.projects:
 			try:
@@ -109,7 +110,7 @@ class GoProjectSCMPool():
 
 		for line in f:
 			content = line.split('\t')
-			self.projects.append(GoProjectSCM(content[1], content[0], content[2][:-1]))
+			self.projects.append(GoProjectSCM(name = content[1], full_name = content[0], scm_url = content[2][:-1]))
 
 		f.close()
 
@@ -223,9 +224,12 @@ class GoProjectSCM():
 			return msg
 
 		def get_commit_tag_hg(tree):
-			msg = runCommand('hg log -r "." --template "{latesttag}\n"', tree)
+			msg = runCommand('hg log -r "." --template "{latesttag}"', tree)
 			msg = msg[0]
-			return msg
+			if msg[0] == "null":
+				return None
+			else:
+				return msg
 
 		def get_commit_date_git(tree):
 			msg = runCommand("git log --format=%ad -n 1", tree)
@@ -244,6 +248,8 @@ class GoProjectSCM():
 
 			if not self.full_name:
 				raise SCMException("No name nor full name specified!")
+
+			self.__sync_db_desc()
 		else:
 			self.obj          = obj
 			self.scm_url      = obj.scm_url
