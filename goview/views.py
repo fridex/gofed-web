@@ -17,7 +17,7 @@ from django.conf import settings
 
 def index(request):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	return render(request, 'goview/list_projects.html', {'projects': pool.get_all_once()})
+	return render(request, 'goview/list_projects.html', {'projects': pool.get_all()})
 
 def project(request, project_id):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
@@ -53,29 +53,29 @@ def rest_list(request):
 
 def rest_info(request, project_id):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	res = pool.get_project(project_id).get_info()
+	res = pool.get_info(project_id)
 	# datetime is not serializable for JSON
-	res['update'] = res['update'].strftime('%F %T %z')
+	res['update'] = res['update'].strftime('%F %T %z') if res['update'] is not None else None
 	return HttpResponse(json.dumps(res), content_type='application/json')
 
 def rest_commit(request, project_id, commit1, commit2 = None):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	res = pool.get_project(project_id).fetch_commit(commit1, commit2)
+	res = pool.fetch_commit(project_id, commit1, commit2)
 	return HttpResponse(json.dumps(res), content_type='application/json')
 
 def rest_depth(request, project_id, depth, from_commit = None):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	res = pool.get_project(project_id).fetch_depth(depth, from_commit)
+	res = pool.fetch_depth(project_id, depth, from_commit)
 	return HttpResponse(json.dumps(res), content_type='application/json')
 
 def rest_date(request, project_id, date1, date2 = None):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	res = pool.get_project(project_id).fetch_date(date1, date2)
+	res = pool.fetch_date(project_id, date1, date2)
 	return HttpResponse(json.dumps(res), content_type='application/json')
 
 def rest_check_deps(request, project_id, commit):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	res = pool.get_project(project_id).check_deps(commit)
+	res = pool.check_deps(project_id, commit)
 	return HttpResponse(json.dumps(res), content_type='application/json')
 
 # Graph service
@@ -95,25 +95,25 @@ def makeSVG(name, data, type):
 
 def graph_commit(request, project_id, commit1, commit2 = None, type = None):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	com = pool.get_project(project_id).fetch_commit(commit1, commit2)
+	com = pool.fetch_commit(project_id, commit1, commit2)
 	com.reverse()
 	return HttpResponse(makeSVG(pool.get_project(project_id).full_name, com, type), content_type='image/svg+xml')
 
 def graph_depth(request, project_id, depth, from_commit = None, type = None):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	com = pool.get_project(project_id).fetch_depth(depth, from_commit)
+	com = pool.fetch_depth(project_id, depth, from_commit)
 	com.reverse()
 	return HttpResponse(makeSVG(pool.get_project(project_id).full_name, com, type), content_type='image/svg+xml')
 
 def graph_date(request, project_id, date1, date2 = None, type = None):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	com = pool.get_project(project_id).fetch_date(date1, date2)
+	com = pool.fetch_date(project_id, date1, date2)
 	com.reverse()
 	return HttpResponse(makeSVG(pool.get_project(project_id).full_name, com, type), content_type='image/svg+xml')
 
 def graph_dependency(request, project_id):
 	pool = GoProjectSCMPool(settings.GOLANG_REPOS)
-	return HttpResponse(pool.get_project(project_id).get_dependnency_graph(), content_type='image/png')
+	return HttpResponse(pool.get_dependnency_graph(project_id), content_type='image/png')
 
 # Requests & Reviews
 

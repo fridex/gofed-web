@@ -13,6 +13,7 @@ from django_cron import logger as cron_logger
 import datetime
 import urllib2
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 
 class SCMType(Enum):
 	git       = 1
@@ -66,8 +67,10 @@ class GoProjectSCMPool():
 				ret = 1
 		return ret
 
-	def get_all_once(self):
-		return GoProjectDesc.objects.all()
+	def get_all(self):
+		if not self.projects:
+			self.projects = GoProjectDesc.objects.all()
+		return self.projects
 
 	def get_project(self, project_id):
 		try:
@@ -75,13 +78,22 @@ class GoProjectSCMPool():
 		except ValueError:
 			project_id_int = None
 
-		for project in self.projects:
-			if project.id == project_id_int or project.full_name == str(project_id):
-				return project
-		raise SCMNotFound()
+		if self.projects:
+			for project in self.projects:
+				if project.full_name == str(project_id) or project_id_int == project.id:
+					return project
+
+		if project_id_int is not None:
+			return get_object_or_404(GoProjectDesc, pk = project_id_int)
+		else:
+			return get_object_or_404(GoProjectDesc, full_name__exact = project_id)
 
 	def get_list(self):
 		res = []
+
+		if not self.projects:
+			self.projects = self.get_all()
+
 		for project in self.projects:
 			res.append({'full_name': project.full_name,
 							'trend': project.trend,
@@ -101,8 +113,50 @@ class GoProjectSCMPool():
 
 		f.close()
 
+	def prefetch_obj(self, project_id):
+		try:
+			project_id_int = int(project_id)
+		except ValueError:
+			project_id_int = None
+
+		if project_id_int is not None:
+			obj = get_object_or_404(GoProjectDesc, pk = project_id_int)
+		else:
+			obj = get_object_or_404(GoProjectDesc, full_name__exact = project_id)
+
+		return GoProjectSCM(obj = obj)
+
+	def fetch_commit(self, project_id, commit1, commit2):
+		return self.prefetch_obj(project_id).fetch_commit(commit1, commit2)
+
+	def fetch_depth(self, project_id, depth, from_commit):
+		return self.prefetch_obj(project_id).fetch_depth(depth, from_commit)
+
+	def fetch_date(self, project_id, date1, date2):
+		return self.prefetch_obj(project_id).fetch_date(date1, date2)
+
+	def check_deps(self, project_id, commit):
+		return self.prefetch_obj(project_id).check_deps(commit)
+
+	def get_info(self, project_id):
+		return self.prefetch_obj(project_id).get_info()
+
+	def get_dependnency_graph(self, project_id):
+		try:
+			project_id_int = int(project_id)
+			obj = self.prefetch_obj(project_id)
+			project_id = obj.full_name
+		except ValueError:
+			pass
+
+		repo_path = settings.REPO_PATH + project_id
+
+		with open(repo_path + '/graph.png', "rb") as f:
+			image = f.read()
+		return image
+
 class GoProjectSCM():
-	def __init__(self, name = None, full_name = None, scm_url = None):
+	def __init__(self, obj = None, name = None, full_name = None, scm_url = None):
 		def update_repo_git():
 			if os.path.isdir(self.repo_path):
 				runCommand("git pull", self.repo_path)
@@ -182,13 +236,22 @@ class GoProjectSCM():
 			ret = runCommand('hg log -r %d --template "{date|isodate}\n"' % int(r[0]), tree)
 			return parse_date(ret[0])
 
-		self.scm_url      = scm_url
-		self.name         = name or full_name
-		self.full_name    = full_name
-		self.trend        = 0
+		if not obj:
+			self.scm_url      = scm_url
+			self.name         = name or full_name
+			self.full_name    = full_name
+			self.trend        = 0
 
-		if not self.full_name:
-			raise SCMException("No name nor full name specified!")
+			if not self.full_name:
+				raise SCMException("No name nor full name specified!")
+		else:
+			self.obj          = obj
+			self.scm_url      = obj.scm_url
+			self.name         = obj.name
+			self.full_name    = obj.full_name
+			self.trend        = obj.trend
+			self.update_date  = obj.update_date
+			self.id           = obj.id
 
 		self.scm_type  = SCMType.git if self.scm_url.endswith(".git") else SCMType.mercurial
 		self.data      = []
