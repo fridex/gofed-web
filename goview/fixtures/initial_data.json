@@ -32,7 +32,7 @@
     "fields": {
       "url_name": "about",
       "name": "About",
-      "content": "TODO: Adjust this"
+      "content": "<p>This web was designed to centralize golang packaging effort and provide useful statistics for golang developers and package maintainers. It uses gofed tool in order to analyze and summarize statistics. Source codes of gofed-web and gofed are available on <a href=\"https://github.com/gofed/\">github.com</a>.\n</p>\n\nMain point of contacts and credits go to:\n<ul>\n<li><a href=\"mailto:jchaloup@redhat.com\">Jan Chaloupka</a> - mainly gofed</li>\n<li><a href=\"mailto:fpokorny@redhat.com\">Fridolín Pokorný</a> - mainly gofed-web and gofed client</li>\n</ul>\n\nIf you have some questions or suggestions, do not hesitate to contact us (we don't bite... usually :-) ).\n\n<h3 class=\"pull-right\"><em>gofed-web - centralizing golang packaging</em></h3>"
     }
   }
 ]
