@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>goweb cron status</title>
+    <link href="/static/goview/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      iframe { width: 100%; height: 50em; }
+      #pause-button { position: fixed; right: 2%; top: 2%; }
+      #reload-icon { font-size: 30px }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>gofed-web cron status</h1>
+      <div class="jumbotron">
+        <iframe id="cron-status" src="/static/goview/cron.log.status"></iframe>
+      </div>
+
+      <h2>last updates</h2>
+      <div class="jumbotron">
+        <iframe id="cron-log" src="/static/goview/cron.log"></iframe>
+      </div>
+    </div>
+
+    <a href="#" id="pause-button"><span id="reload-icon" class="glyphicon glyphicon-pause" aria-hidden="true"></span></a>
+    <script src="/static/goview/js/jquery.min.js"></script>
+    <script src="/static/goview/js/bootstrap.min.js"></script>
+    <script type='text/javascript'>
+    var refresh_id = setInterval(reload_func, 3000);
+
+    function reload_func() { location.reload(); }
+
+    $('#pause-button').on('click', function() {
+       if ($('#reload-icon').hasClass('glyphicon-pause')) {
+         clearInterval(refresh_id);
+         $('#reload-icon').removeClass('glyphicon-pause');
+         $('#reload-icon').addClass('glyphicon-play');
+       } else {
+         refresh_id = setInterval(reload_func, 3000);
+         $('#reload-icon').addClass('glyphicon-pause');
+         $('#reload-icon').removeClass('glyphicon-play');
+       }
+    });
+    </script>
+  </body>
+</html>
+
+
