@@ -14,7 +14,7 @@
     "fields": {
       "url_name": "review",
       "name": "Review spec file",
-      "content": "TODO: Adjust this"
+      "content": "<div class=\"jumbotron\">If you are not sure whether your spec file contains all necessary data, macros or if there is something else you can extend your spec file with, don't hesitate to contact us. We will try to provide you a feedback and help with advanced features (i.e. support for secondary architectures, CI/unit-test testing, macros for automatic updates, etc.).\nTo get a help from us, please fill the form.</div>"
     }
   },
   {
