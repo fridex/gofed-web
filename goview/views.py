@@ -121,7 +121,7 @@ def request(request):
 	if request.method == 'POST':
 		form = GoRequestForm(request.POST)
 		if form.is_valid():
-			go_request = GoProjectReview()
+			go_request = GoProjectRequest()
 			go_request.email = request.POST['email']
 			go_request.text = request.POST['text']
 			go_request.scm_url = request.POST['scm_url']
