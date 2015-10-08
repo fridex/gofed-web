@@ -11,8 +11,7 @@ def notify_review(review):
 	for gouser in users:
 		try:
 			gouser.user.email_user("[goweb-review] A new review was added",
-					'Text:\n\n\t' + review.text,
-					"noreply-goweb@redhat.com")
+					'Text:\n\n\t' + review.text)
 		except SMTPRecipientsRefused:
 			pass
 
@@ -21,8 +20,7 @@ def notify_request(request):
 	for gouser in users:
 		try:
 			gouser.user.email_user("[goweb-request] A new request was added",
-					'SCM URL: ' + request.scm_url + '\nText:\n\n\t' + request.text,
-					"noreply-goweb@redhat.com")
+					'SCM URL: ' + request.scm_url + '\nText:\n\n\t' + request.text)
 		except SMTPRecipientsRefused:
 			pass
 

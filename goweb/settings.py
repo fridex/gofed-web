@@ -99,9 +99,13 @@ STATIC_ROOT = BASE_DIR + '/static/'
 STATIC_URL = '/static/'
 
 # email settings
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.server.com'
-EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.server'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'gofed-web@smtp-server'
+EMAIL_HOST_PASSWORD = 'yoursecretpassword'
+DEFAULT_FROM_EMAIL = 'gofed-web@smtp-server'
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
 
 REPO_PATH = BASE_DIR + '/cache/'
 GOLANG_REPOS = BASE_DIR + '/golang.repos'

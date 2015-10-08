@@ -17,7 +17,6 @@ class GoMail(models.Model):
 		pass
 
 	def clean(self):
-		print self.user.email
 		if self.notify_request or self.notify_review:
 			if self.user.email is None or self.user.email == "":
 				raise ValidationError('No e-mail found for user ' + self.user.username)
