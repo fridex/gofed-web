@@ -5,7 +5,7 @@
     "fields": {
       "url_name": "request",
       "name": "Request package inclusion",
-      "content": "TODO: Adjust this"
+      "content": "<div class=\"jumbotron\">This form is meant for registration of golang projects whose package name does not start with \"golang-\" prefix, i.e. docker, kubernetes, runc. etc. Normally, automatic scans are run periodically on registered golang packages. Scans are designed to discover API backward incompatibilities, to create a dependency graph of golang projects packages and to collect other information that can be used to detect various issues which does not make the golang ecosystem healthy enough. If you register your project, you can benefit from the scans and be informed about updates of your project's dependencies (API breakages, new symbols, depricated packages, etc.) or about changes and recommended updates in your spec files.<br/>\nTo register your project please fill in your email, project's homepage (github.com, bitbucket.org, ...) and package name. In \"Review request text\" field you can provide additional information about the package (regular changes in API, active upstream, under development, etc.) or ask questions about scans. Your input and feedback is welcomed.</div>"
     }
   },
   {
