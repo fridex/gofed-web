@@ -27,6 +27,14 @@ This application is deployed at http://209.132.179.123/
 ```
 # pip install Django==1.7.9
 ```
+* dateutils
+```
+# pip install python-dateutil
+```
+* django-debug-toolbar
+```
+# pip install django-debug-toolbar
+```
 
 The application can be run on any database supported by Django, but there can be
 required database locking (e.g. when updating a project), which is not supported
