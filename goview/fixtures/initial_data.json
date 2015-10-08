@@ -43,5 +43,14 @@
        "name": "Review successfully submitted",
        "content": "<div class=\"alert alert-success\" role=\"alert\">Your review request was successfully submitted and is awaiting a review. Thank you!</div>"
      }
+  },
+  {
+     "model": "goview.GoPage",
+     "pk": 6,
+     "fields": {
+       "url_name": "request-added",
+       "name": "Package inclusion successfully submitted",
+       "content": "<div class=\"alert alert-success\" role=\"alert\">Your package inclusion request was successfully submitted and is awaiting a review. Thank you!</div>"
+     }
    }
 ]
