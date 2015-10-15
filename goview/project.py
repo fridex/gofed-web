@@ -435,7 +435,7 @@ class GoProjectSCM():
 					project_log.save()
 
 		if updates:
-			runCommand("gofed scan-deps -g", self.repo_path)
+			runCommand("gofed scan-deps " + self.full_name + " -g", self.repo_path)
 
 		q = GoProjectDesc.objects.filter(full_name__exact=self.full_name).get()
 		q.update_date = timezone.now()
