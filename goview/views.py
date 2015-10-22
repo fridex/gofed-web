@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from goview.form import GoReviewForm, GoRequestForm
 from django.http import HttpResponseRedirect
 import json
-from goview.project import GoProjectSCMPool, GoProjectSCM
+from goview.project import GoProjectSCMPool, GoProjectSCM, get_fedora_pkgdb_commit
 import sys
 from goview.models import GoProjectReview, GoProjectRequest, GoPage
 from goview.graph import GoGraph
@@ -78,6 +78,9 @@ def rest_check_deps(request, project_id, commit):
 	res = pool.check_deps(project_id, commit)
 	return HttpResponse(json.dumps(res), content_type='application/json')
 
+def rest_fedora_pkgdb(request, package):
+	return HttpResponse(json.dumps(get_fedora_pkgdb_commit(package)), content_type='application/json')
+
 # Graph service
 
 def makeSVG(name, data, type):
@@ -149,6 +152,10 @@ def review(request):
 		form = GoReviewForm()
 	rev = GoPage.objects.get(url_name__exact='review')
 	return render(request, 'goview/review.html', {'page': rev, 'form': form})
+
+def godeps_apidiff(request):
+	page = get_object_or_404(GoPage, url_name__exact='godeps_apidiff')
+	return render(request, 'goview/godeps_apidiff.html', {'page': page})
 
 # Generic pages
 

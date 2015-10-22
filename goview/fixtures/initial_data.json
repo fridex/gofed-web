@@ -52,5 +52,14 @@
        "name": "Package inclusion successfully submitted",
        "content": "<div class=\"alert alert-success\" role=\"alert\">Your package inclusion request was successfully submitted and is awaiting a review. Thank you!</div>"
      }
+   },
+   {
+     "model": "goview.GoPage",
+     "pk": 7,
+     "fields": {
+       "url_name": "godeps_apidiff",
+       "name": "Godeps APIdiff",
+       "content": "<div class=\"jumbotron\">You can use following input field to retrieve APIdiff from your Godeps.json file comparing to packages in <a href=\"https://admin.fedoraproject.org/pkgdb/\">Fedora Package Database</a>.</div>"
+     }
    }
 ]

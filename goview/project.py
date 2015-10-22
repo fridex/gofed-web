@@ -558,38 +558,47 @@ class GoProjectSCM():
 		return ret
 
 	def check_deps(self, commit):
-		try:
-			response = urllib2.urlopen("http://pkgs.fedoraproject.org/cgit/%s.git/plain/%s.spec" %
-													(self.full_name, self.full_name))
-			ret = response.read()
-		except urllib2.HTTPError as e:
-			return {"error": "Fedora DB: " + str(e)}
-		ret = ret.split('\n')
+		package = self.full_name
+		commit_fedora = get_fedora_pkgdb_commit(package)
 
-		commit_fedora = None
-		for line in ret:
-			if line.startswith("%global commit"):
-				commit_fedora = line.split()[-1]
-
-		if not commit_fedora:
-			return {"error": "Fedora commit not found in spec"}
+		if "error" in commit_fedora[1]:
+			return commit_fedora
 
 		try:
 			commit_fedora = GoProjectCommit.objects.filter(project_desc__full_name = self.full_name,
 																			commit__startswith = commit_fedora).get()
 		except ObjectDoesNotExist:
-			return {"error": "Fedora commit not found in DB"}
+			return [{"package": package}, {"error": "Fedora commit not found in DB"}]
 
 		try:
 			commit_db = GoProjectCommit.objects.filter(project_desc__full_name = self.full_name,
 																		commit__startswith = commit).get()
 		except ObjectDoesNotExist:
-			return {"error": "Requested commit not found in DB"}
+			return [{"package": package}, {"error": "Requested commit not found in DB"}]
 
 		if commit_fedora.id > commit_db.id:
-			return {"status": "newer"}
+			return [{"package": package}, commit_fedora[1], {"status": "newer"}]
 		elif commit_fedora.id < commit_db.id:
-			return {"status": "older"}
+			return [{"package": package}, commit_fedora[1], {"status": "older"}]
 		else:
-			return {"status": "up2date"}
+			return [{"package": package}, commit_fedora[1], {"status": "up2date"}]
+
+def get_fedora_pkgdb_commit(package):
+	try:
+		response = urllib2.urlopen("http://pkgs.fedoraproject.org/cgit/%s.git/plain/%s.spec" %
+												(package, package))
+		ret = response.read()
+	except urllib2.HTTPError as e:
+		return [{"package": package}, {"error": "Fedora DB: " + str(e)}]
+	ret = ret.split('\n')
+
+	commit_fedora = None
+	for line in ret:
+		if line.startswith("%global commit"):
+			commit_fedora = line.split()[-1]
+
+	if not commit_fedora:
+		return [{"package": package}, {"error": "Fedora commit not found in spec"}]
+
+	return [{"package": package}, {"commit": commit_fedora}]
 

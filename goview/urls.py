@@ -26,9 +26,11 @@ urlpatterns = patterns('',
 	url(r'^rest/depth/(?P<project_id>[a-zA-Z_\-0-9]+)/(?P<depth>[0-9]+)(?:/(?P<from_commit>[0-9a-z]{4,40}))?/?$', views.rest_depth, name='rest_depth'),
 	url(r'^rest/date/(?P<project_id>[a-zA-Z_\-0-9]+)/(?P<date1>[0-9\-]+)(?:/?P<date2>[0-9\-]*)?/?$', views.rest_date, name='rest_date'),
 	url(r'^rest/check-deps/(?P<project_id>[a-zA-Z_\-0-9]+)/(?P<commit>[0-9a-z]{4,40})/?$', views.rest_check_deps, name='rest_check_deps'),
-	# Review & Request
+	url(r'^rest/fedora-pkgdb/(?P<package>[a-zA-Z_\-0-9]+)/?$', views.rest_fedora_pkgdb, name='rest_fedora_pkgdb'),
+	# Build in pages
 	url(r'^review/?$', views.review, name='review'),
 	url(r'^request/?$', views.request, name='request'),
+	url(r'^godeps-apidiff/?$', views.godeps_apidiff, name='godeps_apidiff'),
 	# Generic pages
 	url(r'^(?P<page_name>[a-z\-0-9]+)/?$', views.page, name='page'),
 )
