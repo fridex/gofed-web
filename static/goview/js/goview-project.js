@@ -1,3 +1,4 @@
+// TODO: make graph call only when a tab is pressed
 var commit_data = [];
 
 function get_data(popup_dialog) {
@@ -498,8 +499,38 @@ function toggle_show_button() {
     }
 }
 
+function tab_pressed() {
+    $('#div_graph_total').hide();
+    $('#div_graph_added').hide();
+    $('#div_graph_modified').hide();
+    $('#div_graph_cpc').hide();
+
+    if (this.id === $('#tab_total')[0].id) {
+        $('#div_graph_total').show();
+    } else if (this.id === $('#tab_added')[0].id) {
+        $('#div_graph_added').show();
+    } else if (this.id === $('#tab_modified')[0].id) {
+        $('#div_graph_modified').show();
+    } else if (this.id === $('#tab_cpc')[0].id) {
+        $('#div_graph_cpc').show();
+    }
+
+    $('#tabs_graph').children().removeClass('active');
+    $(this).parent().addClass('active');
+}
+
 $('#filter_from_commit').on('keyup change', $.proxy(toggle_show_button, this));
 $('#filter_to_commit').on('keyup change', $.proxy(toggle_show_button, this));
 $('#filter_depth').on('keyup change', $.proxy(toggle_show_button, this));
 $('#filter_from_date').on('keyup change', $.proxy(toggle_show_button, this));
 $('#filter_to_date').on('keyup change', $.proxy(toggle_show_button, this));
+
+$('#tab_total').on('click', tab_pressed);
+$('#tab_added').on('click', tab_pressed);
+$('#tab_modified').on('click', tab_pressed);
+$('#tab_cpc').on('click', tab_pressed);
+
+$('#div_graph_added').hide();
+$('#div_graph_modified').hide();
+$('#div_graph_cpc').hide();
+

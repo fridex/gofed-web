@@ -116,14 +116,28 @@
       <hr />
       <h2 id="stats">Statistics</h2>
 
-      <figure class="goweb-graph" id='graph_total'>
-      </figure>
-      <figure class="goweb-graph" id='graph_added'>
-      </figure>
-      <figure class="goweb-graph" id='graph_modified'>
-      </figure>
-      <figure class="goweb-graph" id='graph_cpc'>
-      </figure>
+      <ul id="tabs_graph" class="nav nav-tabs">
+        <li role="presentation" class="active"><a id="tab_total" href="#stats">Total</a></li>
+        <li role="presentation"><a id="tab_added" href="#stats">Added</a></li>
+        <li role="presentation"><a id="tab_modified" href="#stats">Modified</a></li>
+        <li role="presentation"><a id="tab_cpc" href="#stats">Changes per Commits</a></li>
+      </ul>
+
+      <div id="div_graph_total">
+        <figure class="goweb-graph" id='graph_total'></figure>
+      </div>
+
+      <div id="div_graph_added">
+        <figure class="goweb-graph" id='graph_added'></figure>
+      </div>
+
+      <div id="div_graph_modified">
+        <figure class="goweb-graph" id='graph_modified'></figure>
+      </div>
+
+      <div id="div_graph_cpc">
+      <figure class="goweb-graph" id='graph_cpc'></figure>
+      </div>
 
       <link rel="stylesheet" type="text/css" href="{% static "goview/css/bootstrap-datepicker.css"%}" />
       <script src="{% static "goview/js/bootstrap-datepicker.js" %}"></script>
