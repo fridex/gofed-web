@@ -57,7 +57,7 @@
      "model": "goview.GoPage",
      "pk": 7,
      "fields": {
-       "url_name": "godeps_apidiff",
+       "url_name": "godeps-apidiff",
        "name": "Godeps APIdiff",
        "content": "<div class=\"jumbotron\">You can use following input field to retrieve APIdiff from your Godeps.json file comparing to packages in <a href=\"https://admin.fedoraproject.org/pkgdb/\">Fedora Package Database</a>.</div>"
      }

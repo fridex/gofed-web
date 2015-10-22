@@ -154,7 +154,7 @@ def review(request):
 	return render(request, 'goview/review.html', {'page': rev, 'form': form})
 
 def godeps_apidiff(request):
-	page = get_object_or_404(GoPage, url_name__exact='godeps_apidiff')
+	page = get_object_or_404(GoPage, url_name__exact='godeps-apidiff')
 	return render(request, 'goview/godeps_apidiff.html', {'page': page})
 
 # Generic pages
