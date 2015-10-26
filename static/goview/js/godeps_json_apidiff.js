@@ -68,18 +68,17 @@ function pkg_name(import_path) {
 function do_end_load(elem) {
    // simply checking for last elem is not suitable here since actions are async
     if (($('#godeps_json_table_errors tr').length + $('#godeps_json_table_unresolved tr').length +
-             $('#godeps_json_table_deps tr').length) == global_godeps['Deps'].length)
+             $('#godeps_json_table_deps tr').length) == global_pkgs.length)
         $('#load_spinner').css('visibility', 'hidden');
 }
 
 function godeps_prepare_data() {
-    for (var i = 0; i < global_godeps['Deps'].length; i++) {
+    for (var i = 0; i < global_pkgs.length; i++) {
         var self = this;
-        this.ip = global_godeps['Deps'][i]['ImportPath'];
 
         $.ajax({
-           url: '/rest/fedora-pkgdb/' + global_godeps['Deps'][i]['PkgName'],
-           context: global_godeps['Deps'][i]
+           url: '/rest/fedora-pkgdb/' + global_pkgs[i]['PkgName'],
+           context: global_pkgs[i]
         })
         .done(function(data) {
                 this['data'] = data;
@@ -124,18 +123,46 @@ function godeps_json_upload(evt) {
     fr.readAsText(file);
 }
 
-function append_table_deps(elem, data) {
-    var mod = 0;
-    var add = 0;
-    for (var i = 0; i < data.length; i++) {
-       add += data[i]["added"].length;
-       mod += data[i]["modified"].length;
+function get_imports_html(elem) {
+    var ret;
+    var pkg = elem['PkgName'];
 
+    ret =  '<a data-toggle="collapse" href="#collapse-' + pkg + '">' + pkg + '</a>';
+    ret += '<div id="collapse-' + pkg + '" class="panel-collapse collapse">';
+    ret += '<ul>';
+
+    for(var i = 0; i < elem['Imports'].length; i++) {
+        var ip = elem['Imports'][i]['ImportPath'];
+        ret += '<a href="http://' + ip + '"><li>' + ip + '</li></a>';
     }
+
+    ret += '</ul>';
+
+    return ret;
+}
+
+function append_table_deps(elem, data) {
+    function get_apidiff_html(elem, data) {
+        var mod = 0;
+        var add = 0;
+
+        if (data.length === 0)
+           return 'No changes to show';
+
+        for (var i = 0; i < data.length; i++) {
+           add += data[i]["added"].length;
+           mod += data[i]["modified"].length;
+
+        }
+
+        return '<span class="text-success">+' + add +
+           '</span>/<span class="text-danger">~' + mod +'</span>';
+    }
+
     $('#godeps_json_div_deps').removeClass('hidden');
     $('#godeps_json_table_deps').append('<tr>' +
-                       '<td><a href="http://' + elem["ImportPath"] + '">' + elem["PkgName"] + '</a></td>' +
-                       '<td class="text-center"><span class="text-success">+' + add + '</span>/<span class="text-danger">~' + mod +'</span></td>' +
+                       '<td>' + get_imports_html(elem) + '</td>' +
+                       '<td class="text-center">' + get_apidiff_html(elem, data) + '</td>' +
                        '<td class="text-center"><a onclick="$(this).show_apidiff(\'' + elem["PkgName"] + '\')">Show Details</a></td>' +
                        '</tr>');
 
@@ -146,7 +173,7 @@ function append_table_deps(elem, data) {
 function append_table_unresolved(elem, err) {
     $('#godeps_json_div_unresolved').removeClass('hidden');
     $('#godeps_json_table_unresolved').append('<tr>' +
-                       '<td><a href="http://' + elem['ImportPath'] + '">' + elem['ImportPath'] + '</a></td>' +
+                       '<td>' + get_imports_html(elem) + '</td>' +
                        '<td><span class="text-danger">' + err + '</span></td>' +
                        '</tr>');
     do_end_load();
@@ -155,7 +182,7 @@ function append_table_unresolved(elem, err) {
 function append_table_errors(elem, err) {
     $('#godeps_json_div_errors').removeClass('hidden');
     $('#godeps_json_table_errors').append('<tr>' +
-                       '<td><a href="http://' + elem["ImportPath"] + '">' + elem["PkgName"] + '</a></td>' +
+                       '<td>' + get_imports_html(elem) + '</td>' +
                        '<td><span class="text-danger">Error getting stats: ' + err + '</span></td>' +
                        '</tr>');
     do_end_load();
@@ -207,8 +234,36 @@ function show_godeps_json_apidiff() {
 }
 
 function get_godeps_pkg_names() {
-    for (var i = 0; i < global_godeps["Deps"].length; i++)
-        global_godeps["Deps"][i]["PkgName"] = pkg_name(global_godeps["Deps"][i]["ImportPath"]);
+    var pkg;
+    var found;
+
+    for (var i = 0; i < global_godeps["Deps"].length; i++) {
+        pkg = pkg_name(global_godeps["Deps"][i]["ImportPath"]);
+        found = false;
+        for (var j = 0; j < global_pkgs.length; j++) {
+            if (global_pkgs[j]["PkgName"] == pkg) {
+                global_godeps["Deps"][i]["Package"] = global_pkgs[j];
+
+                // Just make sure that there is not different commit
+                var last = global_pkgs[j]['Imports'][global_pkgs[j]['Imports'].length - 1];
+                var pkg_rev = pkg_name(global_godeps["Deps"][i]["Rev"]);
+                if (last['Rev'] != pkg_rev)
+                   alert("Error: different revisions in same project: " +
+                         last['ImportPath'] + ' in rev ' + last['Rev'] +
+                         ' and ' + global_godeps["Deps"][i]["ImportPath"] +
+                         ' in rev '  + pkg_rev);
+                global_pkgs[j]['Imports'].push(global_godeps["Deps"][i]);
+                found = true;
+                break;
+            }
+        }
+
+        // not found, new package
+        if (! found) {
+            new_pkg = {'PkgName': pkg, 'Imports': [ global_godeps["Deps"][i] ]}
+            global_pkgs.push(new_pkg);
+        }
+    }
 }
 
 /* On load */
