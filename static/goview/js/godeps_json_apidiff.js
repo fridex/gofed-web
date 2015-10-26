@@ -41,7 +41,8 @@ $.fn.show_apidiff = function(pkg) {
                     '</tbody>' +
                   '</table>' +
                   '<a class="pull-right" href="/project/' + pkg + '?filter=commit&from=' +
-                    project['data'][1]['commit'] + '&to=' + project['Rev'] + '" target="_blank">More &gt;&gt;</a>',
+                    project['data'][1]['commit'] + '&to=' + project['Imports'][0]['Rev'] +
+                    '" target="_blank">More &gt;&gt;</a>',
         buttons: [{
             label: 'Close',
             action: function(dialog){
