@@ -1,11 +1,3 @@
-/*
- * TODO: get list of all projects
- * TODO: check if a
- * TODO: sorting based on api changes
- * TODO: loading progressbar
- * TODO: show details in a BootstrapDialog
- */
-
 var global_godeps = [];
 var global_pkgs = []
 
