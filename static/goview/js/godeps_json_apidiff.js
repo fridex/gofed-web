@@ -7,6 +7,7 @@
  */
 
 var global_godeps = [];
+var global_pkgs = []
 
 $.fn.show_apidiff = function(pkg) {
     function show_apidiff_fill_table() {
@@ -43,7 +44,7 @@ $.fn.show_apidiff = function(pkg) {
                         '<th class="col-md-6">Apidiff Changes</th>' +
                       '</tr>' +
                     '</thead>' +
-                    '<tbody' +
+                    '<tbody>' +
                         show_apidiff_fill_table(project) +
                     '</tbody>' +
                   '</table>' +
@@ -93,12 +94,7 @@ function godeps_prepare_data() {
                 godeps_json_fill_table(this);
         })
         .fail(function(data) {
-            $('#godeps_json_div_unresolved').removeClass('hidden');
-            $('#godeps_json_table_unresolved').append('<tr>' +
-                  '<td><a href="http://' + this['ImportPath'] + '">' + this['ImportPath'] + '</a></td>' +
-                  '<td><span class="text-danger">Error getting Fedora commit:' + data.statusText + '</span></td>' +
-                  '</tr>');
-            do_end_load();
+           append_table_unresolved(this, data.statusText);
         })
     }
 }
@@ -136,44 +132,59 @@ function godeps_json_upload(evt) {
     fr.readAsText(file);
 }
 
+function append_table_deps(elem, data) {
+    var mod = 0;
+    var add = 0;
+    for (var i = 0; i < data.length; i++) {
+       add += data[i]["added"].length;
+       mod += data[i]["modified"].length;
+
+    }
+    $('#godeps_json_div_deps').removeClass('hidden');
+    $('#godeps_json_table_deps').append('<tr>' +
+                       '<td><a href="http://' + elem["ImportPath"] + '">' + elem["PkgName"] + '</a></td>' +
+                       '<td class="text-center"><span class="text-success">+' + add + '</span>/<span class="text-danger">~' + mod +'</span></td>' +
+                       '<td class="text-center"><a onclick="$(this).show_apidiff(\'' + elem["PkgName"] + '\')">Show Details</a></td>' +
+                       '</tr>');
+
+    do_end_load();
+
+}
+
+function append_table_unresolved(elem, err) {
+    $('#godeps_json_div_unresolved').removeClass('hidden');
+    $('#godeps_json_table_unresolved').append('<tr>' +
+                       '<td><a href="http://' + elem['ImportPath'] + '">' + elem['ImportPath'] + '</a></td>' +
+                       '<td><span class="text-danger">' + err + '</span></td>' +
+                       '</tr>');
+    do_end_load();
+}
+
+function append_table_errors(elem, err) {
+    $('#godeps_json_div_errors').removeClass('hidden');
+    $('#godeps_json_table_errors').append('<tr>' +
+                       '<td><a href="http://' + elem["ImportPath"] + '">' + elem["PkgName"] + '</a></td>' +
+                       '<td><span class="text-danger">Error getting stats: ' + err + '</span></td>' +
+                       '</tr>');
+    do_end_load();
+}
+
 function godeps_json_fill_table(elem) {
      if (elem['data'][1]['error'] === undefined) {
          $.get('/rest/commit/' + elem['PkgName'] + '/' + elem['data'][1]['commit'] + '/' + elem['Rev'] + '/')
              .done(function(data){
                  elem['stats'] = data;
-                 var mod = 0;
-                 var add = 0;
-                 for (var i = 0; i < data.length; i++) {
-                    add += data[i]["added"].length;
-                    mod += data[i]["modified"].length;
+                 append_table_deps(elem, data)
 
-                 }
-
-                $('#godeps_json_div_deps').removeClass('hidden');
-                 $('#godeps_json_table_deps').append('<tr>' +
-                        '<td><a href="http://' + elem["ImportPath"] + '">' + elem["PkgName"] + '</a></td>' +
-                        '<td class="text-center"><span class="text-success">+' + add + '</span>/<span class="text-danger">~' + mod +'</span></td>' +
-                        '<td class="text-center"><a onclick="$(this).show_apidiff(\'' + elem["PkgName"] + '\')">Show Details</a></td>' +
-                        '</tr>');
              })
              .fail(function(data) {
-                 $('#godeps_json_div_errors').removeClass('hidden');
-                 $('#godeps_json_table_errors').append('<tr>' +
-                       '<td><a href="http://' + elem["ImportPath"] + '">' + elem["PkgName"] + '</a></td>' +
-                       '<td><span class="text-danger">Error getting stats: ' + data.statusText + '</span></td>' +
-                       '</tr>');
-                 do_end_load();
+                 append_table_errors(elem, 'Error getting commit APIdiff: ' + data.statusText);
              })
-             .always(function() {
-                 do_end_load();
-             });
      } else {
-         $('#godeps_json_div_errors').removeClass('hidden');
-         $('#godeps_json_table_errors').append('<tr>' +
-               '<td><a href="http://' + elem["ImportPath"] + '">' + elem["PkgName"] + '</a></td>' +
-               '<td><span class="text-danger">Error in response: ' + elem['data'][1]['error'] + '</span></td>' +
-               '</tr>');
-         do_end_load();
+         if (elem['data'][1]['error'] == "Package not in Fedora DB")
+            append_table_unresolved(elem, elem['data'][1]['error']);
+         else
+            append_table_errors(elem, elem['data'][1]['error']);
      }
 }
 
@@ -207,10 +218,12 @@ function get_godeps_pkg_names() {
     for (var i = 0; i < global_godeps["Deps"].length; i++)
         global_godeps["Deps"][i]["PkgName"] = pkg_name(global_godeps["Deps"][i]["ImportPath"]);
 }
+
 /* On load */
 $('#godeps_json_input').removeClass('hidden');
 $('#godeps_json_submit').click(function() {
     global_godeps = [];
+    global_pkgs = [];
     $('#load_spinner').css('visibility', 'visible');
     $('#godeps_json_table_deps').children().remove();
     $('#godeps_json_table_errors').children().remove();

@@ -587,6 +587,8 @@ def get_fedora_pkgdb_commit(package):
 	try:
 		response = urllib2.urlopen("http://pkgs.fedoraproject.org/cgit/%s.git/plain/%s.spec" %
 												(package, package))
+		if response.getcode() != 200:
+			return [{"package": package}, {"error": "Fedora DB returned " + response.getcode()}]
 		ret = response.read()
 	except urllib2.HTTPError as e:
 		return [{"package": package}, {"error": "Fedora DB: " + str(e)}]
@@ -596,6 +598,13 @@ def get_fedora_pkgdb_commit(package):
 	for line in ret:
 		if line.startswith("%global commit"):
 			commit_fedora = line.split()[-1]
+		if line.find("<div class='error'>No repositories found</div>") != -1:
+			return [{"package": package}, {"error": "Package not in Fedora DB"}]
+
+	if package == "golang-github-cheggaaa-pb":
+		print response.getcode()
+		for line in ret:
+			print line
 
 	if not commit_fedora:
 		return [{"package": package}, {"error": "Fedora commit not found in spec"}]
