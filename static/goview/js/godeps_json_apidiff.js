@@ -2,7 +2,7 @@ var global_godeps = [];
 var global_pkgs = []
 
 $.fn.show_apidiff = function(pkg) {
-    function show_apidiff_fill_table() {
+    function show_apidiff_fill_table(project) {
        var ret = "";
 
        for (var j = 0; j < project['stats'].length; j++) {
@@ -20,9 +20,9 @@ $.fn.show_apidiff = function(pkg) {
        return ret;
     }
 
-    for (var i = 0; i < global_godeps['Deps'].length; i++) {
-        if (global_godeps['Deps'][i]['PkgName'] == pkg) {
-           project = global_godeps['Deps'][i];
+    for (var i = 0; i < global_pkgs.length; i++) {
+        if (global_pkgs[i]['PkgName'] == pkg) {
+           project = global_pkgs[i];
            break;
         }
     }
@@ -159,6 +159,7 @@ function append_table_deps(elem, data) {
            '</span>/<span class="text-danger">~' + mod +'</span>';
     }
 
+    console.log("$(this).show_apidiff(" + elem["PkgName"] + ")");
     $('#godeps_json_div_deps').removeClass('hidden');
     $('#godeps_json_table_deps').append('<tr>' +
                        '<td>' + get_imports_html(elem) + '</td>' +
