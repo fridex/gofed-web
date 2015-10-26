@@ -187,11 +187,19 @@ $('#show_commit').click(function() {
 
         var tbl = "";
         var apidiff_ul = "";
+        var commit1;
+        var commit2;
         for (var i = 0; i < data.length; ++i) {
             apidiff_ul = get_apidiff_ul(data[i]);
+            commit1 = data[i]["commit"].substring(0, 7);
+            if (i != data.length - 1)
+                commit2 = data[i + 1]["commit"].substring(0, 7);
+            else
+                commit2 = "...";
+
             if (apidiff_ul.length != 0) {
                 tbl += '<tr>' +
-                         '<td>' + data[i]["commit"].substring(0, 7) + '</td>' +
+                         '<td>' + commit1 + ' - ' + commit2 + '</td>' +
                          '<td>' + get_apidiff_ul(data[i]) + '</td>' +
                          '<td>' + data[i]["date"] + '</td>' +
                        '</tr>';
