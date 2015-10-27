@@ -2,24 +2,6 @@ var global_godeps = [];
 var global_pkgs = []
 
 $.fn.show_apidiff = function(pkg) {
-    function show_apidiff_fill_table(project) {
-       var ret = "";
-
-       for (var j = 0; j < project['stats'].length; j++) {
-           var stats = project['stats'][j];
-
-           for (var k = 0; k < stats['added'].length; k++)
-              ret += '<tr><td><li class="text-success">' + stats['added'][k]['change'] +
-                 " (" + stats['added'][k]['package'] + ")</li></td></tr>";
-
-           for (var k = 0; k < stats['modified'].length; k++)
-              ret += '<tr><td><li class="text-danger">' + stats['modified'][k]['change'] +
-                 " (" + stats['modified'][k]['package'] + ")</li></td></tr>";
-       }
-
-       return ret;
-    }
-
     for (var i = 0; i < global_pkgs.length; i++) {
         if (global_pkgs[i]['PkgName'] == pkg) {
            project = global_pkgs[i];
@@ -27,22 +9,50 @@ $.fn.show_apidiff = function(pkg) {
         }
     }
 
+    $("#bootstrap_dialog_added").html("");
+    $("#bootstrap_dialog_modified").html("");
+
     BootstrapDialog.show({
         title: 'APIdiff for ' + pkg,
         size: BootstrapDialog.SIZE_WIDE,
         message:  '<table class="table table-striped table-hover">' +
                     '<thead>' +
                       '<tr>' +
-                        '<th class="col-md-6">Apidiff Changes</th>' +
+                        '<th class="col-md-6">APIdiff Additions</th>' +
                       '</tr>' +
                     '</thead>' +
-                    '<tbody>' +
-                        show_apidiff_fill_table(project) +
+                    '<tbody  id="bootstrap_dialog_modified">' +
+                    '</tbody>' +
+                  '</table>' +
+                  '<table class="table table-striped table-hover">' +
+                    '<thead>' +
+                      '<tr>' +
+                        '<th class="col-md-6">APIdiff Modifications</th>' +
+                      '</tr>' +
+                    '</thead>' +
+                    '<tbody id="bootstrap_dialog_added">' +
                     '</tbody>' +
                   '</table>' +
                   '<a class="pull-right" href="/project/' + pkg + '?filter=commit&from=' +
                     project['data'][1]['commit'] + '&to=' + project['Imports'][0]['Rev'] +
                     '" target="_blank">More &gt;&gt;</a>',
+        onshown: function(dialog) {
+            for (var j = 0; j < project['stats'].length; j++) {
+                var stats = project['stats'][j];
+
+                for (var k = 0; k < stats['added'].length; k++)
+                    $('#bootstrap_dialog_added').append('<tr><td><span class="text-success">' +
+                                                        stats['added'][k]['change'] +
+                                                        " (" + stats['added'][k]['package'] +
+                                                        ")</span></td></tr>");
+
+                for (var k = 0; k < stats['modified'].length; k++)
+                     $('#bootstrap_dialog_modified').append('<tr><td><span class="text-danger">' +
+                                                         stats['modified'][k]['change'] +
+                                                         " (" + stats['modified'][k]['package'] +
+                                                         ")</span></td></tr>");
+            }
+        },
         buttons: [{
             label: 'Close',
             action: function(dialog){
@@ -160,7 +170,6 @@ function append_table_deps(elem, data) {
            '</span>/<span class="text-danger">~' + mod +'</span>';
     }
 
-    console.log("$(this).show_apidiff(" + elem["PkgName"] + ")");
     $('#godeps_json_div_deps').removeClass('hidden');
     $('#godeps_json_table_deps').append('<tr>' +
                        '<td>' + get_imports_html(elem) + '</td>' +
